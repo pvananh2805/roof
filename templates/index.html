@@ -1,0 +1,87 @@
+<!-- templates/index.html -->
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{{ profile.name }} — {{ profile.title }}</title>
+  <meta name="description" content="{{ profile.bio }}">
+  <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="header">
+    <div class="container hero">
+      <img class="avatar" src="{{ url_for('static', filename=profile.avatar) }}" alt="Ảnh {{ profile.name }}">
+      <div class="intro">
+        <h1>{{ profile.name }}</h1>
+        <p class="title">{{ profile.title }}</p>
+        <p class="location">📍 {{ profile.location }}</p>
+        <p class="bio">{{ profile.bio }}</p>
+        <div class="links">
+          {% for l in profile.links %}
+          <a class="btn" href="{{ l.url }}" target="_blank" rel="noopener">{{ l.label }}</a>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container grid">
+    <section>
+      <h2>Kỹ năng</h2>
+      <ul class="tags">
+        {% for s in profile.skills %}
+        <li class="tag">{{ s }}</li>
+        {% endfor %}
+      </ul>
+    </section>
+
+    <section>
+      <h2>Dự án nổi bật</h2>
+      <div class="cards">
+        {% for p in profile.projects %}
+        <article class="card">
+          <div class="card-body">
+            <h3>{{ p.name }}</h3>
+            <p class="desc">{{ p.desc }}</p>
+            <ul class="chips">
+              {% for t in p.tags %}
+              <li class="chip">{{ t }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+          <div class="card-footer">
+            <a class="link" href="{{ p.link }}" target="_blank" rel="noopener">Xem chi tiết →</a>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <p>© {{ profile.name }} — {{ profile.location }}</p>
+      <button id="themeToggle" class="icon-btn" aria-label="Đổi theme">🌓</button>
+    </div>
+  </footer>
+
+  <script>
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const themeKey = "theme";
+    const setTheme = (t) => document.documentElement.setAttribute("data-theme", t);
+    const saved = localStorage.getItem(themeKey);
+    setTheme(saved ? saved : (prefersDark ? "dark" : "light"));
+    document.getElementById("themeToggle").addEventListener("click", () => {
+      const cur = document.documentElement.getAttribute("data-theme");
+      const next = cur === "dark" ? "light" : "dark";
+      setTheme(next);
+      localStorage.setItem(themeKey, next);
+    });
+  </script>
+</body>
+</html>
